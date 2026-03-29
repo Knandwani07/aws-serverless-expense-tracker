@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spendly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Instrument+Mono:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+<div class="glow-orb orb-3"></div>
+
+<div class="app">
+
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-mark">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="12" fill="url(#logoGrad)"/>
+          <path d="M10 18h16M18 10v16" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="logoGrad" x1="0" y1="0" x2="36" y2="36">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#888888"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="brand">
+        <span class="app-name">Spendly</span>
+        <span class="app-tagline">Expense Tracker</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="header-date" id="headerDate"></span>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <section class="hero">
+      <div class="hero-label">Total Spending</div>
+      <div class="hero-amount">
+        <span class="currency" id="currencySymbolHero">₹</span><span id="total">0.00</span>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-pill">
+          <span class="stat-pill-dot"></span>
+          <span id="expenseCount">No expenses yet</span>
+        </div>
+      </div>
+      <div class="hero-bar">
+        <div class="hero-bar-fill" id="heroBarFill" style="width:0%"></div>
+      </div>
+    </section>
+
+    <div class="grid">
+
+      <div class="card add-card">
+        <div class="card-header">
+          <span class="card-title">New Expense</span>
+          <span class="card-badge">+</span>
+        </div>
+
+        <div class="form-group currency-group">
+          <label class="form-label">Currency</label>
+          <div class="select-wrap">
+            <select id="currency" onchange="updateCurrency()">
+              <option value="$">$ USD — Dollar</option>
+              <option value="€">€ EUR — Euro</option>
+              <option value="£">£ GBP — Pound</option>
+              <option value="¥">¥ JPY — Yen</option>
+              <option value="₹" selected>₹ INR — Rupee</option>
+              <option value="₩">₩ KRW — Won</option>
+              <option value="A$">A$ AUD — Aus Dollar</option>
+              <option value="C$">C$ CAD — Can Dollar</option>
+              <option value="Fr">Fr CHF — Franc</option>
+              <option value="R$">R$ BRL — Real</option>
+            </select>
+            <svg class="select-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+
+        <div class="form-group amount-group">
+          <label class="form-label">Amount</label>
+          <div class="input-wrapper amount-wrapper">
+            <span class="input-prefix" id="currencyPrefix">₹</span>
+            <input type="number" id="amount" placeholder="0.00" step="0.01" min="0">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <input type="text" id="category" placeholder="e.g. Food, Travel">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" id="date">
+          </div>
+        </div>
+
+        <button class="add-btn" onclick="addExpense()">
+          <span>Add Expense</span>
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+            <path d="M9 3.75v10.5M3.75 9h10.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="form-status" id="formStatus"></div>
+      </div>
+
+      <div class="card chart-card">
+        <div class="card-header">
+          <span class="card-title">By Category</span>
+          <span class="card-count" id="chartTotal"></span>
+        </div>
+        <div class="donut-wrap">
+          <canvas id="donutChart" width="220" height="220"></canvas>
+          <div class="donut-center">
+            <span class="donut-label">Total</span>
+            <span class="donut-value" id="donutTotal">—</span>
+          </div>
+        </div>
+        <div class="legend" id="chartLegend">
+          <div class="chart-empty">Add expenses to see breakdown</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card table-card">
+      <div class="card-header">
+        <span class="card-title">All Expenses</span>
+        <span class="card-count" id="tableCount">0 entries</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Amount</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="expenseTable">
+            <tr class="empty-row">
+              <td colspan="5">
+                <div class="empty-state">
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <rect x="8" y="12" width="24" height="18" rx="3" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M14 12V9a2 2 0 012-2h8a2 2 0 012 2v3" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M15 21h10M15 25h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                  <p>No expenses recorded yet</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
