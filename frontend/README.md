@@ -1,4 +1,4 @@
-# 🎨 Spendly Frontend
+# Expense Dashboard Frontend
 
 ### 📌 UI Layer of the Serverless Expense Tracker  
 A modern, responsive frontend built using HTML, CSS, and JavaScript that interacts with AWS APIs in real-time.
